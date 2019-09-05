@@ -17,27 +17,30 @@ steps:
 
 # restore nuget packages
 - task: DotNetCoreCLI@2
+  displayName : 'Restore Nuget packages'
   inputs:
     command: restore
     projects: '**/*/*.csproj'
 
 # build project
 - task: DotNetCoreCLI@2
-  displayName: Build
+  displayName: 'Build project'
   inputs:
     command: build
-    projects: '**/src/*.csproj'
+    projects: '**/src/*/*.csproj'
     arguments: '--configuration $(BuildConfiguration)' # Update this to match your need
 
 # execute unit tests
 - task: DotNetCoreCLI@2
+  displayName: 'Run Unit Tests'
   inputs:
     command: test
-    projects: '**/*tests/*.csproj'
+    projects: '**/*tests/*/*.csproj'
     arguments: '--configuration $(BuildConfiguration) --collect "Code coverage"'
 
 # create a zip archive ready to deploy
 - task: DotNetCoreCLI@2
+  displayName: 'Create Zip'
   inputs:
     command: publish
     publishWebProjects: True
