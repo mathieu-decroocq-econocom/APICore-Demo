@@ -51,7 +51,7 @@ stages:
 
     - task: PublishBuildArtifacts@1
       inputs:
-        pathtoPublish: '$(System.DefaultWorkingDirectory)' 
+        pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
         artifactName: 'coreapidemo'
 
 - stage: Staging
@@ -62,6 +62,13 @@ stages:
       vmImage: 'vs2017-win2016'
     # environment: Staging
     steps:
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'coreapidemo'
+        downloadPath: '$(System.ArtifactsDirectory)' 
+
     - task: AzureWebApp@1
       inputs:
         azureSubscription: $(AzureConnection)
