@@ -48,7 +48,7 @@ stages:
         publishWebProjects: True
         arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
         zipAfterPublish: True
-        
+
     - task: PublishBuildArtifacts@1
       inputs:
         pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
@@ -66,7 +66,7 @@ stages:
       inputs:
         azureSubscription: $(AzureConnection)
         appName: coreapidemo
-        package: $(System.ArtifactsDirectory)/**/*.zip
+        package: $(Build.ArtifactStagingDirectory)/coreapidemo/*.zip
 
 - stage: Prod
   dependsOn: Staging
