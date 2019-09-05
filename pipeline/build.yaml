@@ -18,14 +18,14 @@ steps:
   displayName: Build
   inputs:
     command: build
-    projects: '**/*.csproj'
+    projects: '**/src/*.csproj'
     arguments: '--configuration $(BuildConfiguration)' # Update this to match your need
 
 # execute unit tests
 - task: DotNetCoreCLI@2
   inputs:
     command: test
-    projects: '**/*Tests/*.csproj'
+    projects: '**/*tests/*.csproj'
     arguments: '--configuration $(BuildConfiguration) --collect "Code coverage"'
 
 # create a zip archive ready to deploy
