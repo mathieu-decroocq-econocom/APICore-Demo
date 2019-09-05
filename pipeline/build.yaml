@@ -1,48 +1,63 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
 - master
+stages:
+  - stage: build
+  jobs:
+  - job: run_build
+  pool:
+    vmImage: 'vs2017-win2016'
+  steps:
+  - task: DotNetCoreInstaller@0
+    displayName: 'Install .net core 3.0 (preview)'
+    inputs:
+      version: '3.0.100-preview9-014004'
 
-pool:
-  vmImage: 'vs2017-win2016'
+  # restore nuget packages
+  - task: DotNetCoreCLI@2
+    displayName : 'Restore Nuget packages'
+    inputs:
+      command: restore
+      projects: '**/*/*.csproj'
 
-steps:
-- task: DotNetCoreInstaller@0
-  displayName: 'Install .net core 3.0 (preview)'
-  inputs:
-    version: '3.0.100-preview9-014004'
+  # build project
+  - task: DotNetCoreCLI@2
+    displayName: 'Build project'
+    inputs:
+      command: build
+      projects: '**/src/*/*.csproj'
+      arguments: '--configuration $(BuildConfiguration)' # Update this to match your need
 
-# restore nuget packages
-- task: DotNetCoreCLI@2
-  displayName : 'Restore Nuget packages'
-  inputs:
-    command: restore
-    projects: '**/*/*.csproj'
+  # execute unit tests
+  - task: DotNetCoreCLI@2
+    displayName: 'Run Unit Tests'
+    inputs:
+      command: test
+      projects: '**/*tests/*/*.csproj'
+      arguments: '--configuration $(BuildConfiguration) --collect "Code coverage"'
 
-# build project
-- task: DotNetCoreCLI@2
-  displayName: 'Build project'
-  inputs:
-    command: build
-    projects: '**/src/*/*.csproj'
-    arguments: '--configuration $(BuildConfiguration)' # Update this to match your need
+  # create a zip archive ready to deploy
+  - task: DotNetCoreCLI@2
+    displayName: 'Create Zip'
+    inputs:
+      command: publish
+      publishWebProjects: True
+      arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+      zipAfterPublish: True
 
-# execute unit tests
-- task: DotNetCoreCLI@2
-  displayName: 'Run Unit Tests'
-  inputs:
-    command: test
-    projects: '**/*tests/*/*.csproj'
-    arguments: '--configuration $(BuildConfiguration) --collect "Code coverage"'
+- stage: staging
+  dependsOn: build
+  jobs:
+  - job: deploy_staging
+    pool:
+      vmImage: 'vs2017-win2016'
+    steps:
+    - script: echo Staging
 
-# create a zip archive ready to deploy
-- task: DotNetCoreCLI@2
-  displayName: 'Create Zip'
-  inputs:
-    command: publish
-    publishWebProjects: True
-    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-    zipAfterPublish: True
+- stage: prod
+  dependsOn: staging
+  jobs:
+  - job: deploy_prod
+    pool:
+      vmImage: 'vs2017-win2016'
+    steps:
+    - script: echo Prod
