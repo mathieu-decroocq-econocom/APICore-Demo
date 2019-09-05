@@ -64,6 +64,7 @@ stages:
     steps:
     - task: DownloadBuildArtifacts@0
       inputs:
+        displayName: 'Download Artifact'
         buildType: 'current'
         downloadType: 'single'
         artifactName: 'coreapidemo'
@@ -71,9 +72,10 @@ stages:
 
     - task: AzureWebApp@1
       inputs:
+        displayName: 'Deploy to AzureWebApp'
         azureSubscription: $(AzureConnection)
         appName: coreapidemo
-        package: $(System.DefaultWorkingDirectory)/**/*.zip
+        package: $(System.ArtifactsDirectory)/**/*.zip
 
 - stage: Prod
   dependsOn: Staging
