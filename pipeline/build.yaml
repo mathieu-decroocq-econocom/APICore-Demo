@@ -38,12 +38,12 @@ stages:
 
     # create a zip archive ready to deploy
     - task: DotNetCoreCLI@2
-    displayName: 'Create Zip'
-    inputs:
-      command: publish
-      publishWebProjects: True
-      arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-      zipAfterPublish: True
+      displayName: 'Create Zip'
+      inputs:
+        command: publish
+        publishWebProjects: True
+        arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+        zipAfterPublish: True
 
 - stage: staging
   dependsOn: build
