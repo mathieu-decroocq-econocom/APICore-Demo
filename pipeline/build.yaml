@@ -50,9 +50,9 @@ stages:
         zipAfterPublish: True
 
     - task: PublishBuildArtifacts@1
-        inputs:
-          pathtoPublish: '$(System.DefaultWorkingDirectory)' 
-          artifactName: 'coreapidemo'
+      inputs:
+        pathtoPublish: '$(System.DefaultWorkingDirectory)' 
+        artifactName: 'coreapidemo'
 
 - stage: Staging
   dependsOn: Build_Test
