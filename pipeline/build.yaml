@@ -50,7 +50,7 @@ stages:
         zipAfterPublish: True
 
 - stage: Staging
-  dependsOn: build
+  dependsOn: Build_Test
   jobs:
   - job: deploy_staging
     pool:
@@ -64,7 +64,7 @@ stages:
         package: $(System.ArtifactsDirectory)/**/*.zip
 
 - stage: Prod
-  dependsOn: staging
+  dependsOn: Staging
   jobs:
   - job: deploy_prod
     pool:
