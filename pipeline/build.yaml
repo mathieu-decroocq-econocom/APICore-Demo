@@ -1,6 +1,10 @@
 trigger:
 - master
 
+variables:
+  BuildConfiguration: 'Release'
+  AzureConnection: 'Azure MSDN Perso'
+
 stages:
 - stage: Build & Test
   jobs:
@@ -51,9 +55,13 @@ stages:
   - job: deploy_staging
     pool:
       vmImage: 'vs2017-win2016'
-    environment: Staging
+    # environment: Staging
     steps:
-    - script: echo Staging
+    - task: AzureWebApp@1
+    inputs:
+      azureSubscription: $(AzureConnection)
+      appName: coreapidemo
+      package: $(System.ArtifactsDirectory)/**/*.zip
 
 - stage: Prod
   dependsOn: staging
@@ -61,6 +69,6 @@ stages:
   - job: deploy_prod
     pool:
       vmImage: 'vs2017-win2016'
-    environment: Prod
+    # environment: Prod
     steps:
     - script: echo Prod
