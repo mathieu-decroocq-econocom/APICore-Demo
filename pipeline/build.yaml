@@ -1,42 +1,43 @@
 trigger:
 - master
+
 stages:
   - stage: build
   jobs:
   - job: run_build
-  pool:
-    vmImage: 'vs2017-win2016'
-  steps:
-  - task: DotNetCoreInstaller@0
-    displayName: 'Install .net core 3.0 (preview)'
-    inputs:
-      version: '3.0.100-preview9-014004'
+    pool:
+      vmImage: 'vs2017-win2016'
+    steps:
+    - task: DotNetCoreInstaller@0
+      displayName: 'Install .net core 3.0 (preview)'
+      inputs:
+        version: '3.0.100-preview9-014004'
 
-  # restore nuget packages
-  - task: DotNetCoreCLI@2
-    displayName : 'Restore Nuget packages'
-    inputs:
-      command: restore
-      projects: '**/*/*.csproj'
+    # restore nuget packages
+    - task: DotNetCoreCLI@2
+      displayName : 'Restore Nuget packages'
+      inputs:
+        command: restore
+        projects: '**/*/*.csproj'
 
-  # build project
-  - task: DotNetCoreCLI@2
-    displayName: 'Build project'
-    inputs:
-      command: build
-      projects: '**/src/*/*.csproj'
-      arguments: '--configuration $(BuildConfiguration)' # Update this to match your need
+    # build project
+    - task: DotNetCoreCLI@2
+      displayName: 'Build project'
+      inputs:
+        command: build
+        projects: '**/src/*/*.csproj'
+        arguments: '--configuration $(BuildConfiguration)' # Update this to match your need
 
-  # execute unit tests
-  - task: DotNetCoreCLI@2
-    displayName: 'Run Unit Tests'
-    inputs:
-      command: test
-      projects: '**/*tests/*/*.csproj'
-      arguments: '--configuration $(BuildConfiguration) --collect "Code coverage"'
+    # execute unit tests
+    - task: DotNetCoreCLI@2
+      displayName: 'Run Unit Tests'
+      inputs:
+        command: test
+        projects: '**/*tests/*/*.csproj'
+        arguments: '--configuration $(BuildConfiguration) --collect "Code coverage"'
 
-  # create a zip archive ready to deploy
-  - task: DotNetCoreCLI@2
+    # create a zip archive ready to deploy
+    - task: DotNetCoreCLI@2
     displayName: 'Create Zip'
     inputs:
       command: publish
