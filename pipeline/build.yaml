@@ -58,10 +58,10 @@ stages:
     # environment: Staging
     steps:
     - task: AzureWebApp@1
-    inputs:
-      azureSubscription: $(AzureConnection)
-      appName: coreapidemo
-      package: $(System.ArtifactsDirectory)/**/*.zip
+      inputs:
+        azureSubscription: $(AzureConnection)
+        appName: coreapidemo
+        package: $(System.ArtifactsDirectory)/**/*.zip
 
 - stage: Prod
   dependsOn: staging
