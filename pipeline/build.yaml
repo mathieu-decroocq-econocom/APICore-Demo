@@ -26,7 +26,7 @@ steps:
   inputs:
     command: test
     projects: '**/*Tests/*.csproj'
-    arguments: '--configuration $(BuildConfiguration)' --collect "Code coverage"'
+    arguments: '--configuration $(BuildConfiguration) --collect "Code coverage"'
 
 # create a zip archive ready to deploy
 - task: DotNetCoreCLI@2
