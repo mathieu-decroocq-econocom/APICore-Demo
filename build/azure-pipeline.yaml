@@ -12,11 +12,6 @@ stages:
     pool:
       vmImage: 'vs2017-win2016'
     steps:
-    - task: DotNetCoreInstaller@0
-      displayName: 'Install .net core 3.0 (preview)'
-      inputs:
-        version: '3.0.100-preview9-014004'
-
     # restore nuget packages
     - task: DotNetCoreCLI@2
       displayName : 'Restore Nuget packages'
@@ -46,10 +41,11 @@ stages:
       inputs:
         command: publish
         publishWebProjects: True
-        arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory) -r win10-x64 --self-contained true'
+        arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
         zipAfterPublish: True
 
     - task: PublishBuildArtifacts@1
+      displayName: Publish Artifacts
       inputs:
         pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
         artifactName: 'coreapidemo'
